@@ -1,4 +1,4 @@
-# thesis
+# Thesis
 
 Preliminary work to explore the idea of working on my masters thesis with Anthony Mendes at Cal Poly in the field of discrete mathematics. 
 
