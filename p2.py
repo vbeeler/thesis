@@ -3,86 +3,7 @@ from functools import reduce
 from operator import mul
 import copy
 import math
-
-# description: computes the hook lengths for each cell in Young diagram
-# input: int_part (int[]) - integer partition in standard form (decreasing)
-# output: 2d list of hook lengths of the integer partition
-def hook_lengths(int_part):
-
-   hook_lengths = []
-
-   # length of the partition
-   part_length = len(int_part)
-
-   # maximum element of the partition
-   max_part = int_part[0]
-
-   # track # cells above a given column to compute hook lengths
-   cells_above = [0] * max_part
-
-   # iterate in reverse order (increasing) through the partition
-   for i in range(part_length - 1, -1, -1):
-      cur_row_len = int_part[i]
-      cur_row_hooks = []
-      
-      # compute hook length at each cell by adding # of cells above + to the 
-      #   right (including current cell)
-      for j in range(cur_row_len):
-         cur_row_hooks.append(cells_above[j] + cur_row_len - j)
-
-      # add the current row of hook lengths to the result
-      hook_lengths.append(cur_row_hooks)
-
-      # increment the counter of cells above to keep track for the next row
-      for i in range(cur_row_len):
-         cells_above[i] = cells_above[i] + 1
-
-   return(hook_lengths)
-
-
-# description: computes the prime factorization of a given number
-# input: n (int) - the given number
-# output: a list containing each prime factor (with corresponding multiplicity)
-def prime_fact(n):
-
-   i = 2 # potential prime divisor
-   factors = []
-
-   # stop iterating when i * i > n since if this is the case there are no more 
-   #   divisors of n - if there were, one divisor would be less than i and one 
-   #   would be greater than i, but we've already checked all #s less than i
-   while i * i <= n:
-      # if leftover num is not div by i, increment i and continue
-      if n % i:
-         i += 1
-
-      # if leftover num is div by i, divide n by this factor and add to factors
-      else:
-         n //= i
-         # i must be prime since composite nums have primes as factors which are
-         #   smaller integers, so those are reached first (i increases)
-         factors.append(i)
-
-   # if a nontrivial factor of n is left, it must be prime (no divisors)
-   if n > 1:
-      factors.append(n)
-
-   return factors
-
-
-# description: helper function to compute the nested product of 2d list
-# input: nested_list (int[][]) - given list
-# output: the product of all numbers in the nested list
-def nested_product(nested_list):
-
-   prod = 1
-
-   # multiply together all #s in the list
-   for l in nested_list:
-      for num in l:
-         prod *= num
-
-   return prod
+from general import prime_fact, hook_lengths, deg_of_irr_rep
 
 
 # description: helper function to better visualize a prime factorization
@@ -241,31 +162,28 @@ def experiment():
       print()
 
 
-# description: test our hypothesis that all self-conjugate partitions of size 
-#                n >= 2 have corresponding degree divisible by 2
+# description: test our hypothesis that the irreducible representations
+#                corresponding to self-conjugate partitions of size 
+#                n >= 2 have degree divisible by 2
 # input: max_n (int) - the maximum integer partition size to test to
 # output: none (the function will print "FAIL" if any test cases fail)
 def test_hypothesis(max_n):
-   for n in range(2, max_n):
-      self_conjs = self_conjugates(n)
 
-      if len(self_conjs) == 0:
-         continue
+    # test integer partitions of all sizes from 2 to n
+    for n in range(2, max_n):
 
-      n_fact_primes = prime_fact(math.factorial(n))
-      twos_in_n_fact = sum(p == 2 for p in n_fact_primes)
-      
-      for int_part in self_conjs:
-         hook_lens = hook_lengths(int_part)
-         hook_prod_primes = prime_fact(nested_product(hook_lens))
-         twos_in_hook_prod = sum(p == 2 for p in hook_prod_primes)
+        self_conjs = self_conjugates(n)
 
-         # print("the int part is " + str(int_part))
-         # print("n = " + str(n) + ", # twos in n! = " + str(twos_in_n_fact) + \
-         #       ", # twos in hook prod = " + str(twos_in_hook_prod))
-         # print("Pass!") if twos_in_n_fact > twos_in_hook_prod \ 
-         #                else print("FAIL")
-         if twos_in_n_fact <= twos_in_hook_prod:
-            print("FAIL")
+        # if there are no self-conjugate partitions of this size, skip to next
+        if len(self_conjs) == 0:
+            continue
+
+        # test that 
+        for self_conj in self_conjs:
+            
+            deg = deg_of_irr_rep(self_conj)
+
+            if deg % 2 != 0:
+                print("FAILED with self-conjugate partition" + str(self_conj))
 
 test_hypothesis(100)
