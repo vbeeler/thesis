@@ -6,38 +6,42 @@ import math
 
 # description: computes the hook lengths for each cell in Young diagram
 # input: int_part (int[]) - integer partition in standard form (decreasing)
-# output: 2d list of hook lengths of the integer partition
+# output: 2d list of hook lengths of the integer partition (in order 
+#           corresponding to the Young diagram
 def hook_lengths(int_part):
 
-   hook_lengths = []
+    if len(int_part) == 0:
+        return [[]]
 
-   # length of the partition
-   part_length = len(int_part)
+    hook_lengths = []
 
-   # maximum element of the partition
-   max_part = int_part[0]
+    # length of the partition
+    part_length = len(int_part)
 
-   # track # cells above a given column to compute hook lengths
-   cells_above = [0] * max_part
+    # maximum element of the partition
+    max_part = int_part[0]
 
-   # iterate in reverse order (increasing) through the partition
-   for i in range(part_length - 1, -1, -1):
-      cur_row_len = int_part[i]
-      cur_row_hooks = []
+    # track # cells above a given column to compute hook lengths
+    cells_above = [0] * max_part
+
+    # iterate in reverse order (increasing) through the partition
+    for i in range(part_length - 1, -1, -1):
+        cur_row_len = int_part[i]
+        cur_row_hooks = []
       
-      # compute hook length at each cell by adding # of cells above + to the 
-      #   right (including current cell)
-      for j in range(cur_row_len):
-         cur_row_hooks.append(cells_above[j] + cur_row_len - j)
+        # compute hook length at each cell by adding # of cells above + to the 
+        #   right (including current cell)
+        for j in range(cur_row_len):
+            cur_row_hooks.append(cells_above[j] + cur_row_len - j)
 
-      # add the current row of hook lengths to the result
-      hook_lengths.append(cur_row_hooks)
+        # add the current row of hook lengths to the result
+        hook_lengths.append(cur_row_hooks)
 
-      # increment the counter of cells above to keep track for the next row
-      for i in range(cur_row_len):
-         cells_above[i] = cells_above[i] + 1
+        # increment the counter of cells above to keep track for the next row
+        for i in range(cur_row_len):
+            cells_above[i] = cells_above[i] + 1
 
-   return(hook_lengths)
+    return(hook_lengths)
 
 
 # description: computes the prime factorization of a given number
@@ -87,7 +91,7 @@ def nested_product(nested_list):
 # description: computes the degree of the irreducible representation of Sn 
 #                corresponding to the given integer partition using the hook
 #                length formula
-# input: int_part (int[]) the integer partition
+# input: int_part (int[]) the integer partition (decreasing)
 # output: the degree of the representation
 def deg_of_irr_rep(int_part):
     n = sum(int_part)
@@ -184,6 +188,7 @@ def test_general_hypothesis(max_n):
             else:
                 print("FAILED with n = " + str(n) + " and p = " + str(p) + ".")
 
-
-print_int_partitions()
-test_general_hypothesis(10)
+if __name__ == "__main__":
+    print_int_partitions()
+    test_general_hypothesis(50)
+    # print(num_not_div_by_p(33, 3))
