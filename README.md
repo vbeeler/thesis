@@ -1,6 +1,6 @@
 # Thesis
 
-Preliminary work to explore the idea of working on my masters thesis with Anthony Mendes at Cal Poly in the field of discrete mathematics. 
+This repository contains work toward a masters thesis by Vanessa Beeler and Anthony Mendes at Cal Poly in the field of discrete mathematics. 
 
 We are currently exploring the topic of the hook length formula and its relation to the degrees of irreducible representations for Sn. Dr. Mendes found an interesting pattern that we are playing around with now. 
 
